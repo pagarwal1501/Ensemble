@@ -1202,3 +1202,52 @@ button {
     padding: 24px 20px;
   }
 }
+
+/* ===== Single booth tier — fluid across all widths ===== */
+.pricing-grid {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  width: 100%;
+}
+
+.pricing-card.premium {
+  display: grid;
+  grid-template-columns: minmax(190px, 240px) 1fr;
+  grid-template-areas:
+    "head  feats"
+    "price feats"
+    "cta   feats";
+  column-gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  text-align: left;
+  padding: clamp(28px, 4vw, 48px);
+}
+
+.pricing-card.premium h3 { grid-area: head; align-self: end; margin-bottom: 0; }
+.pricing-card.premium .pricing-amount { grid-area: price; justify-content: flex-start; margin-bottom: 0; }
+.pricing-card.premium .pricing-features { grid-area: feats; margin-bottom: 0; }
+.pricing-card.premium .btn { grid-area: cta; align-self: start; justify-self: start; }
+
+.pricing-card.premium .price { font-size: clamp(44px, 6vw, 56px); }
+.pricing-card.premium .pricing-features li { font-size: clamp(13px, 1.4vw, 15px); }
+
+@media (max-width: 860px) {
+  .pricing-card.premium {
+    grid-template-columns: 1fr;
+    grid-template-areas: "head" "price" "feats" "cta";
+    text-align: center;
+    row-gap: 18px;
+  }
+  .pricing-card.premium .pricing-amount { justify-content: center; }
+  .pricing-card.premium .btn { justify-self: stretch; }
+}
+
+/* ===== iOS fixes ===== */
+.hero { min-height: 100svh; }
+
+.form-group input,
+.form-group textarea {
+  font-size: 16px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
