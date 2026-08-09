@@ -368,7 +368,10 @@
             </div>
           </div>
         </div>
-        <form class="register-form" id="vendorForm" novalidate>
+        <form class="register-form" id="vendorForm" name="vendor-register" method="POST"
+      data-netlify="true" netlify-honeypot="bot-field" novalidate>
+  <input type="hidden" name="form-name" value="vendor-register">
+  <p hidden><label>Skip this: <input name="bot-field"></label></p>
           <div class="form-group">
             <label for="businessName">Business Name <span class="required">*</span></label>
             <input type="text" id="businessName" name="businessName" placeholder="Your brand or business name" required>
