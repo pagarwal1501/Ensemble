@@ -1,3 +1,4 @@
+const SQUARE_PAYMENT_LINK = 'https://square.link/u/hAlPR6Ym';
 /* =========================================
    ENSEMBLE BEYOND BORDERS — App Logic
    ========================================= */
@@ -96,8 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const ownerName = form.ownerName.value.trim();
         const email = form.email.value.trim();
         const description = form.description.value.trim();
-        const stallPriceEl = form.querySelector('input[name="stallPrice"]:checked');
-        const stallPrice = stallPriceEl ? stallPriceEl.value : '';
+        const stallPrice = '300';
 
         let valid = true;
 
@@ -120,10 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showError('descriptionError', 'Please describe your business.');
             valid = false;
         }
-        if (!stallPrice) {
-            showError('stallPriceError', 'Please select a booth tier.');
-            valid = false;
-        }
 
         if (!valid) return;
 
@@ -141,16 +137,19 @@ document.addEventListener('DOMContentLoaded', () => {
         businessName, ownerName, email, description, stallPrice,
     }).toString(),
 });
-            const data = await res.json();
-
-            if (data.success) {
+            if (res.ok) {
                 formMessage.className = 'form-message success';
-                formMessage.textContent = data.message;
+                formMessage.textContent = 'Details received — continue to payment to confirm your booth.';
                 formMessage.style.display = 'block';
                 form.reset();
+
+                if (SQUARE_PAYMENT_LINK) {
+                    formMessage.textContent = 'Details saved. Opening secure checkout — your booth is held while you pay.';
+                    setTimeout(function () { window.location.href = SQUARE_PAYMENT_LINK; }, 1500);
+                }
             } else {
                 formMessage.className = 'form-message error';
-                formMessage.textContent = (data.errors || ['Something went wrong.']).join(' ');
+                formMessage.textContent = 'Something went wrong. Please email us at global_sales@ensembleexhibit.com.';
                 formMessage.style.display = 'block';
             }
         } catch (err) {
@@ -163,4 +162,24 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
         }
     });
-});
+ });
+/* ---- Return from Square checkout ---- */
+(function () {
+    if (!new URLSearchParams(window.location.search).has('paid')) return;
+    var section = document.getElementById('register');
+    if (!section) return;
+    var wrap = section.querySelector('.register-wrapper') || section;
+    var panel = document.createElement('div');
+    panel.setAttribute('role', 'status');
+    panel.style.cssText = 'grid-column:1/-1;padding:28px;margin-bottom:24px;border:1px solid #C9A44A;' +
+        'border-radius:8px;background:#F5EDE0;text-align:center;';
+    panel.innerHTML =
+        '<h3 style="color:#6B1D2A;margin:0 0 8px;">Your booth is confirmed</h3>' +
+        '<p style="margin:0;color:#2C2C2C;">Payment received — Square has emailed your receipt. ' +
+        'We\'ll follow up with booth setup details and load-in times before August 23.</p>';
+    wrap.insertBefore(panel, wrap.firstChild);
+    var form = document.getElementById('vendorForm');
+    if (form) form.style.display = 'none';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState({}, '', window.location.pathname);
+})();
